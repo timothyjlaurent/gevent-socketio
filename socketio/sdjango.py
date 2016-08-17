@@ -83,6 +83,7 @@ def socketio(request):
 
 
 try:
-    urls = patterns("", (r'', socketio'))
+    urls = patterns("", (r'', socketio))
 except NameError:
-    urls = [url(r'', socketio))]
+    urls = [url(r'', socketio)]
+
