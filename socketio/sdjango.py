@@ -12,10 +12,18 @@ except ImportError:
 
 # for Django 1.3 support
 try:
-    from django.conf.urls import patterns, url, include
+    from django.conf.urls import  url, include
 except ImportError:
-    from django.conf.urls.defaults import patterns, url, include
+    from django.conf.urls.defaults import url, include
 
+# for Django 1.10 support
+try:
+    from django.conf.urls import  patterns
+except ImportError:
+    try:
+        from django.conf.urls.defaults import patterns
+    except ImportError:
+        pass
 
 SOCKETIO_NS = {}
 
@@ -23,7 +31,7 @@ SOCKETIO_NS = {}
 LOADING_SOCKETIO = False
 
 
-        
+
 def autodiscover():
     """
     Auto-discover INSTALLED_APPS sockets.py modules and fail silently when
@@ -58,7 +66,7 @@ def autodiscover():
 class namespace(object):
     def __init__(self, name=''):
         self.name = name
- 
+
     def __call__(self, handler):
         SOCKETIO_NS[self.name] = handler
         return handler
@@ -74,4 +82,7 @@ def socketio(request):
     return HttpResponse("")
 
 
-urls = patterns("", (r'', socketio))
+try:
+    urls = patterns("", (r'', socketio'))
+except NameError:
+    urls = [url(r'', socketio))]
